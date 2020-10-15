@@ -1,28 +1,72 @@
 ---
 title: "US_Exploratory"
+author: "Nicole and Caedmon"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r, eval=FALSE}
+library(tidyverse)
+library(lubridate)     
+library(ggthemes)      
+library(readr)
+library(geofacet)     
+library(maps)          # for map data
+library(ggmap)         # for mapping points on maps
+library(gplots)        # for col2hex() function
+library(RColorBrewer)  # for color palettes
+library(sf)            # for working with spatial data
+library(leaflet)       # for highly customizable
+library(gganimate)
+library(googlesheets4)
+theme_set(theme_minimal())
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+pol_1980 <- read_csv("pol_1980.csv")
+pol_2000 <- read_csv("pol_2000.csv")
+pol_2015 <- read_csv("pol_2015.csv")
+pol_2020 <- read_csv("pol_2020.csv")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+pol_1980 %>%
+  #arrange(desc(AQI)) %>%
+  summarise(`State Name`, `County Name`, AQI) %>%
+  top_n(AQI, n = 10)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+states_map <- map_data("state")
+states_map
+pol_1980 %>%
+  group_by(`State Name`) %>%
+  summarise(mean(AQI)) %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = `State Name`,
+               fill = `mean(AQI)`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "right",
+        plot.background = element_rect(fill = "#b6d4c8"))
+```
+
