@@ -22,6 +22,8 @@ library(sf)            # for working with spatial data
 library(leaflet)       # for highly customizable
 library(gganimate)
 library(googlesheets4)
+library(gt)
+library(plotly)
 theme_set(theme_minimal())
 ```
 
@@ -34,13 +36,60 @@ pol_2020 <- read_csv("pol_2020.csv")
 
 ```{r}
 pol_1980 %>%
-  #arrange(desc(AQI)) %>%
-  summarise(`State Name`, `County Name`, AQI) %>%
-  top_n(AQI, n = 10)
+  arrange(desc(AQI)) %>%
+  head(AQI, n = 10) %>%
+  subset(select = c(`State Name`, `County Name`, AQI)) %>%
+  gt(rowname_col = "County Name") %>%
+  tab_stubhead("County") %>%
+  tab_header(title = md("**Highest AQI Counties 1980**"))
 ```
 
+```{r}
+pol_1980 %>%
+  arrange(desc(AQI)) %>%
+  head(AQI, n = 10) %>%
+  subset(select = c(`State Name`, `County Name`, AQI)) %>%
+  mutate(year = "1980") -> hi_AQI_1980
+pol_2000 %>%
+  arrange(desc(AQI)) %>%
+  head(AQI, n = 10) %>%
+  subset(select = c(`State Name`, `County Name`, AQI)) %>%
+  mutate(year = "2000") -> hi_AQI_2000
+pol_2015 %>%
+  arrange(desc(AQI)) %>%
+  head(AQI, n = 10) %>%
+  subset(select = c(`State Name`, `County Name`, AQI)) %>%
+  mutate(year = "2015") -> hi_AQI_2015
+pol_2020 %>%
+  arrange(desc(AQI)) %>%
+  head(AQI, n = 10) %>%
+  subset(select = c(`State Name`, `County Name`, AQI)) %>%
+  mutate(year = "2020") -> hi_AQI_2020
 
+hi_AQI_1980 %>%
+  full_join(hi_AQI_2000,
+            by = c("State Name", "County Name", "AQI", "year")) %>%
+  full_join(hi_AQI_2015,
+            by = c("State Name", "County Name", "AQI", "year")) %>%
+  full_join(hi_AQI_2020,
+            by = c("State Name", "County Name", "AQI", "year")) -> all_hi_AQI
+```
 
+```{r}
+all_hi_AQI %>%
+  group_by(year) %>%
+  filter(AQI == max(AQI)) %>%
+  ggplot(aes(x = year,
+             y = AQI,
+             fill = `County Name`,
+             text = `State Name`)) +
+  geom_col() +
+  theme(legend.position = "none") +
+  labs(title = "Highest AQI Counties",
+       x = "") -> highest_AQIs
+
+ggplotly(highest_AQIs, tooltip = c("County Name", "State Name", "AQI"))
+```
 
 
 
@@ -56,17 +105,16 @@ pol_1980 %>%
 
 ```{r}
 states_map <- map_data("state")
-states_map
-pol_1980 %>%
-  group_by(`State Name`) %>%
-  summarise(mean(AQI)) %>%
+
+pol_2000 %>%
   ggplot() +
   geom_map(map = states_map,
-           aes(map_id = `State Name`,
-               fill = `mean(AQI)`)) +
+           aes(map_id = str_to_lower(`State Name`),
+               fill = AQI)) +
   expand_limits(x = states_map$long, y = states_map$lat) +
   theme_map() +
   theme(legend.position = "right",
-        plot.background = element_rect(fill = "#b6d4c8"))
+        plot.background = element_rect(fill = "#b6d4c8")) +
+  labs(title = "20 Year Difference", fill = "CO")
 ```
 
