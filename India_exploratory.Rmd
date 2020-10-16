@@ -40,40 +40,37 @@ india_city_pollution <-
   india_pollution %>% 
   left_join(india_coordinates,
             by = c("City")) %>% 
-  #pivot_longer(cols = c("PM2.5", "NO2", "CO", "SO2", "O3","AQI"),
-               #names_to = "Pollutant",
-               #values_to = "degree_pollution")
+  pivot_longer(cols = c("PM2.5", "NO2", "CO", "SO2", "O3","AQI"),
+               names_to = "Pollutant",
+               values_to = "degree_pollution") %>% 
+  drop_na(degree_pollution) %>% 
+  mutate(month = month(Date, label = TRUE),
+         year = year(Date)) 
 
-print(india_city_pollution)
 ```
 
 
 ```{r}
 india_city_pollution %>% 
-  filter(Pollutant == "AQI") %>% 
-  ggplot(aes(x = Date, y = degree_pollution)) +
-  geom_line()
+  group_by(month, City, year, Pollutant) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>% 
+  arrange(year)
 ```
 
 ```{r}
 total_india<- 
   india_city_pollution %>% 
-  mutate(weekday = wday(Date, label=TRUE)) %>% 
-  filter(weekday == "Fri") %>% 
-  ggplot(aes(x = Date, y = degree_pollution), position = position_stack())+
-  geom_area(aes(fill = Pollutant))+
+  group_by(month, City, year, Pollutant) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>% 
+  arrange(year) %>% 
+  ggplot(aes(x = year, y = mean_monthly), position = position_stack())+
+  geom_jitter()+
   labs(title = "Air Pollution in India over time ",
-       subtitle = "Date:{closest_state}",
+       subtitle = "Date:{closest_states}",
        x = "Date",
        y = "Degree of Pollution")+
-  scale_fill_viridis_d()+
-  transition_states(Date)
-
-anim_save("total_india.gif", total_india)
-```
-
-```{r}
-knitr::include_graphics("total_india.gif")
+  facet_wrap(~Pollutant, scales = "free_y")+
+  transition_states(City)
 ```
 
 
@@ -84,9 +81,9 @@ india <- get_stamenmap(
     zoom = 5)
 
 ggmap(india)+
-geom_point(data = india_city_pollution %>% filter(Date == c("2015-05-31", "2016-05-31", "2017-05-31", "2018-05-31","2019-05-31", "2020-05-31")), 
-           aes(x = Long, y = Lat, color = Pollutant, size = degree_pollution))+
-  facet_wrap(~Date)+
+geom_point(data = india_city_pollution,
+           aes(x = Long, y = Lat, color = Pollutant, size = ))+
+  facet_wrap(~year)+
   theme(legend.background = element_blank())+
   theme_map()
 ```
