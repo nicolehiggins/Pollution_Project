@@ -1,0 +1,117 @@
+---
+title: "India exploratory"
+author: "Ayushi"
+date: "10/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)     
+library(ggthemes)      
+library(geofacet)     
+library(maps)          # for map data
+library(ggmap)         # for mapping points on maps
+library(gplots)        # for col2hex() function
+library(RColorBrewer)  # for color palettes
+library(sf)            # for working with spatial data
+library(leaflet)       # for highly customizable
+library(gganimate)
+library(openintro)
+library(sp)
+library(maptools)
+library(rgeos)
+theme_set(theme_minimal())
+```
+
+
+
+```{r}
+india_coordinates <- readr::read_csv('https://raw.githubusercontent.com/ayushi98/DS-project/main/Indian%20Cities%20Database.csv') #For Indian Cities' Latitude and Longitude
+india_pollution <- readr::read_csv('https://raw.githubusercontent.com/ayushi98/DS-project/main/city_day.csv') #For Indian Cities' Pollution Levels
+```
+
+```{r}
+india_city_pollution <-
+  india_pollution %>% 
+  left_join(india_coordinates,
+            by = c("City")) %>% 
+  pivot_longer(cols = c("PM2.5", "NO2", "CO", "SO2", "O3","AQI"),
+               names_to = "Pollutant",
+               values_to = "degree_pollution") %>% 
+  drop_na(degree_pollution) %>% 
+  mutate(month = month(Date, label = TRUE),
+         year = year(Date)) 
+
+```
+
+
+```{r}
+india_city_pollution %>% 
+  group_by(month, City, year, Pollutant) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>% 
+  arrange(year)
+```
+
+```{r}
+total_india<- 
+  india_city_pollution %>% 
+  group_by(month, City, year, Pollutant) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>% 
+  arrange(year) %>% 
+  ggplot(aes(x = year, y = mean_monthly), position = position_stack())+
+  geom_jitter()+
+  labs(title = "Air Pollution in India over time ",
+       subtitle = "Date:{closest_states}",
+       x = "Date",
+       y = "Degree of Pollution")+
+  facet_wrap(~Pollutant, scales = "free_y")+
+  transition_states(City)
+```
+
+
+```{r}
+india <- get_stamenmap(
+    bbox = c(left = 61.188, bottom = 8.026, right = 106.542, top = 36.502), 
+    maptype = "terrain",
+    zoom = 5)
+
+ggmap(india)+
+geom_point(data = india_city_pollution,
+           aes(x = Long, y = Lat, color = Pollutant, size = ))+
+  facet_wrap(~year)+
+  theme(legend.background = element_blank())+
+  theme_map()
+```
+
+```{r}
+ggmap(india)+
+geom_point(data = india_city_pollution, 
+           aes(x = Long, y = Lat, color = degree_pollution))+
+  facet_wrap(~Pollutant)+
+  theme(legend.background = element_blank())+
+  theme_map()
+```
+
+```{r}
+shp <- readShapeSpatial('~/Dropbox/PhD_Arka/Exploratory Indian Data Analysis/India Shapefile With Kashmir/india_shapefile_git/Admin2.shp')
+
+```
+
+```{r}
+mean_aqi <- 
+  india_city_pollution %>%
+  group_by(State) %>% 
+  summarise(state_mean_AQI = mean(AQI, na.rm = TRUE)) %>% 
+
+ggmap(india)+
+  geom_point(data = mean_aqi, 
+           aes(x = Long, y = Lat, color = state_mean_AQI))+
+  #facet_wrap(~Pollutant)+
+  theme(legend.background = element_blank())+
+  theme_map()
+```
