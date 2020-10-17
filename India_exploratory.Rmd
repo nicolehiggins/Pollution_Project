@@ -83,7 +83,7 @@ india_city_pollution %>%
   group_by(month,Pollutant, year) %>% 
   summarize(mean_monthly = mean(degree_pollution)) %>%
   arrange(year) %>% 
-  ggplot(aes(x = month, y = mean_monthly))+
+  ggplot(aes(x = month, y = mean_monthly), position = position_stack())+
   geom_col(aes(fill = Pollutant))+
   labs(title = "Pollution by Season in India",
        x = "",
