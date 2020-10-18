@@ -77,6 +77,30 @@ india_city_pollution %>%
 indian_states <- st_read("Igismap/Indian_States.shp", quiet = TRUE)
 ```
 
+**#4**
+```{r}
+india_pollutants<-
+  india_city_pollution %>% 
+  group_by(month,Pollutant, year) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>%
+  ungroup() %>% 
+  ggplot(aes(x = year, y = mean_monthly, color = Pollutant))+
+  geom_point()+
+  labs(title = "Pollutants over time",
+       subtitle = "Pollutant:{closest_state}",
+       y = "Monthly Average",
+       x = "")+
+  transition_states(Pollutant)
+
+anim_save("pollutant_over_time.gif", india_pollutants)  
+```
+
+```{r}
+knitr::include_graphics("pollutant_over_time.gif")
+```
+
+
+**#6**
 ```{r}
 pollution_season<-
 india_city_pollution %>% 
