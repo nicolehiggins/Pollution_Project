@@ -33,6 +33,7 @@ theme_set(theme_minimal())
 ```{r}
 india_coordinates <- readr::read_csv('https://raw.githubusercontent.com/ayushi98/DS-project/main/Indian%20Cities%20Database.csv') #For Indian Cities' Latitude and Longitude
 india_pollution <- readr::read_csv('https://raw.githubusercontent.com/ayushi98/DS-project/main/city_day.csv') #For Indian Cities' Pollution Levels
+india_factories <- readr::read_csv('https://raw.githubusercontent.com/nicolehiggins/Pollution_Project/main/india_factory_data.csv') #For Indian Factories Data
 ```
 
 ```{r}
@@ -143,7 +144,11 @@ geom_point(data = india_city_pollution,
 ```
 
 ```{r}
-
+india_factories %>% 
+  select(`State/Union Territory`, `Number of Factories - 2014-15`) %>% 
+  ggplot(aes(x = `Number of Factories - 2014-15`, y = `State/Union Territory`)) +
+  geom_col(fill = "DarkBlue") +
+  labs(x = "Number of Factories in 2015", title = "Number of Factories in Indian States")
 
 ```
 
