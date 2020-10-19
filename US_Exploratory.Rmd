@@ -24,10 +24,11 @@ library(gganimate)
 library(googlesheets4)
 library(gt)
 library(plotly)
+library(patchwork)
 theme_set(theme_minimal())
 ```
 
-```{r}
+```{r, eval=FALSE}
 pol_1980 <- read_csv("pol_1980.csv")
 pol_2000 <- read_csv("pol_2000.csv")
 pol_2015 <- read_csv("pol_2015.csv")
@@ -106,6 +107,150 @@ ggplotly(highest_AQIs, tooltip = c("County Name", "State Name", "AQI"))
 ```{r}
 states_map <- map_data("state")
 
+pol_1980 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `CO Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#e8fffb")) +
+  labs(title = "1980",
+       fill = "Parts/Million") +
+  scale_fill_gradient(limits = c(0, 3.3),
+                      low = "#baf5e6",
+                      high = "#044b52",
+                      na.value = "#c9c9c9") -> CO_map_1980
+
+pol_1980 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `NO2 Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#fcebff")) +
+  labs(title = "1980",
+       fill = "Parts/Billion") +
+  scale_fill_gradient(limits = c(0, 50),
+                      low = "#c5bcf7",
+                      high = "#5f136e",
+                      na.value = "#c9c9c9") -> NO2_map_1980
+
+pol_1980 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `Ozone Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#f1ffeb")) +
+  labs(title = "1980",
+       fill = "Parts/Million") +
+  scale_fill_gradient(limits = c(0, 0.047),
+                      low = "#efff42",
+                      high = "#2e6b13",
+                      na.value = "#c9c9c9") -> Ozone_map_1980
+
+pol_1980 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `SO2 Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#ffebf9")) +
+  labs(title = "1980",
+       fill = "Parts/Billion") +
+  scale_fill_gradient(limits = c(0, 18),
+                      low = "#ffd1fd",
+                      high = "#70133d",
+                      na.value = "#c9c9c9") -> SO2_map_1980
+
+pol_1980 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = AQI)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#fff1e0")) +
+  labs(title = "1980",
+       fill = "Mg/Cubic Meter") +
+  scale_fill_gradient(limits = c(0, 145),
+                      low = "#fff88f",
+                      high = "#8a3e04",
+                      na.value = "#c9c9c9") -> AQI_map_1980
+
+pol_2000 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `CO Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#e8fffb")) +
+  labs(title = "2000",
+       fill = "Parts/Million") +
+  scale_fill_gradient(limits = c(0, 3.3),
+                      low = "#baf5e6",
+                      high = "#044b52",
+                      na.value = "#c9c9c9") -> CO_map_2000
+
+pol_2000 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `NO2 Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#fcebff")) +
+  labs(title = "2000",
+       fill = "Parts/Billion") +
+  scale_fill_gradient(limits = c(0, 50),
+                      low = "#c5bcf7",
+                      high = "#5f136e",
+                      na.value = "#c9c9c9") -> NO2_map_2000
+
+pol_2000 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `Ozone Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#f1ffeb")) +
+  labs(title = "2000",
+       fill = "Parts/Million") +
+  scale_fill_gradient(limits = c(0, 0.047),
+                      low = "#efff42",
+                      high = "#2e6b13",
+                      na.value = "#c9c9c9") -> Ozone_map_2000
+
+pol_2000 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `SO2 Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#ffebf9")) +
+  labs(title = "2000",
+       fill = "Parts/Billion") +
+  scale_fill_gradient(limits = c(0, 18),
+                      low = "#ffd1fd",
+                      high = "#70133d",
+                      na.value = "#c9c9c9") -> SO2_map_2000
+
 pol_2000 %>%
   ggplot() +
   geom_map(map = states_map,
@@ -113,8 +258,187 @@ pol_2000 %>%
                fill = AQI)) +
   expand_limits(x = states_map$long, y = states_map$lat) +
   theme_map() +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill = "#fff1e0")) +
+  labs(title = "2000",
+       fill = "Mg/Cubic Meter") +
+  scale_fill_gradient(limits = c(0, 145),
+                      low = "#fff88f",
+                      high = "#8a3e04",
+                      na.value = "#c9c9c9") -> AQI_map_2000
+
+pol_2020 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `CO Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
   theme(legend.position = "right",
-        plot.background = element_rect(fill = "#b6d4c8")) +
-  labs(title = "20 Year Difference", fill = "CO")
+        plot.background = element_rect(fill = "#e8fffb"),
+        legend.background = element_blank()) +
+  labs(title = "2020",
+       fill = "Parts/Million") +
+  scale_fill_gradient(limits = c(0, 3.3),
+                      low = "#baf5e6",
+                      high = "#044b52",
+                      na.value = "#c9c9c9") -> CO_map_2020
+
+pol_2020 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `NO2 Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "right",
+        plot.background = element_rect(fill = "#fcebff"),
+        legend.background = element_blank()) +
+  labs(title = "2020",
+       fill = "Parts/Billion") +
+  scale_fill_gradient(limits = c(0, 50),
+                      low = "#c5bcf7",
+                      high = "#5f136e",
+                      na.value = "#c9c9c9") -> NO2_map_2020
+
+pol_2020 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `Ozone Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "right",
+        plot.background = element_rect(fill = "#f1ffeb"),
+        legend.background = element_blank()) +
+  labs(title = "2020",
+       fill = "Parts/Million") +
+  scale_fill_gradient(limits = c(0, 0.047),
+                      low = "#efff42",
+                      high = "#2e6b13",
+                      na.value = "#c9c9c9") -> Ozone_map_2020
+
+pol_2020 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = `SO2 Mean`)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "right",
+        plot.background = element_rect(fill = "#ffebf9"),
+        legend.background = element_blank()) +
+  labs(title = "2020",
+       fill = "Parts/Billion") +
+  scale_fill_gradient(limits = c(0, 18),
+                      low = "#ffd1fd",
+                      high = "#70133d",
+                      na.value = "#c9c9c9") -> SO2_map_2020
+
+pol_2020 %>%
+  ggplot() +
+  geom_map(map = states_map,
+           aes(map_id = str_to_lower(`State Name`),
+               fill = AQI)) +
+  expand_limits(x = states_map$long, y = states_map$lat) +
+  theme_map() +
+  theme(legend.position = "right",
+        legend.background = element_blank(),
+        plot.background = element_rect(fill = "#fff1e0")) +
+  labs(title = "2020",
+       fill = "Mg/Cubic Meter") +
+  scale_fill_gradient(limits = c(0, 145),
+                      low = "#fff88f",
+                      high = "#8a3e04",
+                      na.value = "#c9c9c9") -> AQI_map_2020
+```
+
+```{r}
+(AQI_map_1980|AQI_map_2000|AQI_map_2020) +
+  plot_annotation(title = "AQI Change over Time") +
+  plot_layout(widths = 5, heights = 1) -> AQI_maps
+(CO_map_1980|CO_map_2000|CO_map_2020) +
+  plot_annotation(title = "CO Change over Time") -> CO_maps
+(NO2_map_1980|NO2_map_2000|NO2_map_2020) +
+  plot_annotation(title = "NO2 Change over Time") -> NO2_maps
+(Ozone_map_1980|Ozone_map_2000|Ozone_map_2020) +
+  plot_annotation(title = "Ozone Change over Time") -> Ozone_maps
+(SO2_map_1980|SO2_map_2000|SO2_map_2020) +
+  plot_annotation(title = "SO2 Change over Time") -> SO2_maps
+
+AQI_maps
+CO_maps
+NO2_maps
+Ozone_maps
+SO2_maps
+```
+
+```{r}
+pol_1980 %>%
+  summarise(`US AQI` = mean(AQI, na.rm = TRUE),
+            `US CO` = mean(`CO Mean`, na.rm = TRUE),
+            `US NO2` = mean(`NO2 Mean`, na.rm = TRUE),
+            `US Ozone` = mean(`Ozone Mean`, na.rm = TRUE),
+            `US SO2` = mean(`SO2 Mean`, na.rm = TRUE),
+            year = "1980") -> nat_1980
+
+pol_2000 %>%
+  summarise(`US AQI` = mean(AQI, na.rm = TRUE),
+            `US CO` = mean(`CO Mean`, na.rm = TRUE),
+            `US NO2` = mean(`NO2 Mean`, na.rm = TRUE),
+            `US Ozone` = mean(`Ozone Mean`, na.rm = TRUE),
+            `US SO2` = mean(`SO2 Mean`, na.rm = TRUE),
+            year = "2000") -> nat_2000
+
+pol_2015 %>%
+  summarise(`US AQI` = mean(AQI, na.rm = TRUE),
+            `US CO` = mean(`CO Mean`, na.rm = TRUE),
+            `US NO2` = mean(`NO2 Mean`, na.rm = TRUE),
+            `US Ozone` = mean(`Ozone Mean`, na.rm = TRUE),
+            `US SO2` = mean(`SO2 Mean`, na.rm = TRUE),
+            year = "2015") -> nat_2015
+
+pol_2020 %>%
+  summarise(`US AQI` = mean(AQI, na.rm = TRUE),
+            `US CO` = mean(`CO Mean`, na.rm = TRUE),
+            `US NO2` = mean(`NO2 Mean`, na.rm = TRUE),
+            `US Ozone` = mean(`Ozone Mean`, na.rm = TRUE),
+            `US SO2` = mean(`SO2 Mean`, na.rm = TRUE),
+            year = "2020") -> nat_2020
+
+nat_sum <- nat_1980 %>%
+  full_join(nat_2000,
+            by = c("US AQI", "US CO", "US NO2", "US Ozone", "US SO2", "year")) %>%
+  full_join(nat_2015,
+            by = c("US AQI", "US CO", "US NO2", "US Ozone", "US SO2", "year")) %>%
+  full_join(nat_2020,
+            by = c("US AQI", "US CO", "US NO2", "US Ozone", "US SO2", "year"))
+```
+
+```{r}
+nat_sum %>%
+  # mutate(CO = `US CO`*10,
+  #        Ozone = `US Ozone`*300,
+  #        AQI = `US AQI`/2,
+  #        NO2 = `US NO2`*.75,
+  #        SO2 = `US SO2`*1.6) %>%
+  pivot_longer(cols = c(`US AQI`, `US CO`, `US NO2`, `US Ozone`, `US SO2`),
+               names_to = "pollutants",
+               values_to = "mean") %>%
+  mutate(scaled = ifelse(pollutants == "US AQI", mean/2,
+                         ifelse(pollutants == "US CO", mean*10,
+                                ifelse(pollutants == "US NO2", mean*.75,
+                                       ifelse(pollutants == "US SO2", mean*1.6,
+                                              mean*300))))) %>%
+  ggplot(aes(x = year, y = scaled, fill = pollutants)) +
+  geom_col() +
+  geom_text(aes(label = round(mean, digits = 3)), 
+            nudge_y = 1, 
+            size = 3) +
+  facet_wrap(vars(pollutants)) +
+  theme(axis.text.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none") 
 ```
 
