@@ -108,7 +108,7 @@ ggplotly(min_aqi,
 
 **#2**
 
-```{r, fig.height=4.5}
+```{r}
 india_city_pollution2 %>% 
   filter(Pollutant!="AQI") %>% 
   group_by(Pollutant, State) %>% 
@@ -116,7 +116,8 @@ india_city_pollution2 %>%
   ggplot(aes(x = max_state, y = State)) +
   geom_col(aes(fill  = Pollutant))+
   facet_wrap(~Pollutant, scales = "free_x")+
-  theme(legend.position = "none")+
+  theme(legend.position = "none",
+        axis.title.y = element_text(size = 15))+
   labs(title = "Highest Pollutants in each State",
        y = "",
        x = "Degree of Pollution")
@@ -124,7 +125,18 @@ india_city_pollution2 %>%
 ```
 
 ```{r}
-indian_states <- st_read("Igismap/Indian_States.shp", quiet = TRUE)
+indian_states <- st_read("Igismap/Indian_States.shp", quiet = TRUE) %>% 
+  filter(st_nm != "Andaman & Nicobar Islands",
+         st_nm != "Lakshwadeep") %>% 
+
+
+```
+
+
+```{r}
+indian_states %>% 
+  ggplot()+ 
+  geom_sf(aes(fill = ))
 ```
 
 **#4**
