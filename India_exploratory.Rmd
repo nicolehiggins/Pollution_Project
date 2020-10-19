@@ -81,7 +81,7 @@ max_aqi <- india_city_pollution %>%
   select(City, Date, AQI) %>% 
   group_by(City) %>% 
   summarise(city_max_AQI = max(AQI, na.rm = TRUE)) %>% 
-  ggplot(aes(x = city_max_AQI, y = City)) +
+  ggplot(aes(x = city_max_AQI, y = fct_reorder(City, city_max_AQI, .desc = TRUE)))+
   geom_col(fill = "DarkBlue")+
   labs(x = "", 
        y = "",
@@ -96,14 +96,14 @@ min_aqi <- india_city_pollution %>%
   select(City, Date, AQI) %>% 
   group_by(City) %>% 
   summarise(city_min_AQI = min(AQI, na.rm = TRUE)) %>% 
-  ggplot(aes(x = city_min_AQI, y = City)) +
+  ggplot(aes(x = city_min_AQI, y = fct_reorder(City, city_min_AQI, .desc = TRUE))) +
   geom_col(fill = "Orange")+
   labs(x = "", 
        y = "",
        title = "Lowest AQIs for Major Indian Cities between 2015-2020")
 
 ggplotly(min_aqi,
-         tooltip = c("text", "x"))
+         tooltip = c("AQI", "x"))
 ```
 
 **#2**
@@ -134,19 +134,19 @@ india_pollutants<-
   group_by(month,Pollutant, year) %>% 
   summarize(mean_monthly = mean(degree_pollution)) %>%
   ungroup() %>% 
-  ggplot(aes(x = year, y = mean_monthly, color = Pollutant))+
-  geom_point()+
-  labs(title = "Pollutants over time",
+  ggplot(aes(x = year, y = mean_monthly, fill = Pollutant))+
+  geom_col()+
+  labs(title = "Pollutants over time in India",
        subtitle = "Pollutant:{closest_state}",
        y = "Monthly Average",
        x = "")+
   transition_states(Pollutant)
 
-anim_save("pollutant_over_time.gif", india_pollutants)  
+anim_save("pollution_over_time.gif", india_pollutants)  
 ```
 
 ```{r}
-knitr::include_graphics("pollutant_over_time.gif")
+knitr::include_graphics("pollution_over_time.gif")
 ```
 
 
@@ -206,7 +206,6 @@ india_factories %>%
 ```{r}
 
 ```
-
 
 
 ```{r}
