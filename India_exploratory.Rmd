@@ -64,6 +64,7 @@ india_city_pollution2 <-
 ```
 
 
+
 ```{r}
 india_city_pollution %>% 
   ggplot(aes(x = Date, y = AQI, color = City)) +
@@ -85,7 +86,8 @@ max_aqi <- india_city_pollution %>%
   geom_col(fill = "DarkBlue")+
   labs(x = "", 
        y = "",
-       title = "Highest AQIs for Major Indian Cities between 2015-2020")
+       title = "Highest AQIs for Major Indian Cities between 2015-2020")+
+  theme_clean()
 
 ggplotly(max_aqi,
          tooltip = c("text", "x"))
@@ -100,7 +102,8 @@ min_aqi <- india_city_pollution %>%
   geom_col(fill = "Orange")+
   labs(x = "", 
        y = "",
-       title = "Lowest AQIs for Major Indian Cities between 2015-2020")
+       title = "Lowest AQIs for Major Indian Cities between 2015-2020")+
+  theme_clean()
 
 ggplotly(min_aqi,
          tooltip = c("AQI", "x"))
@@ -110,7 +113,8 @@ ggplotly(min_aqi,
 
 ```{r}
 india_city_pollution2 %>% 
-  filter(Pollutant!="AQI") %>% 
+  filter(Pollutant!="AQI",
+         State != "NA") %>% 
   group_by(Pollutant, State) %>% 
   summarize(max_state = max(degree_pollution)) %>% 
   ggplot(aes(x = max_state, y = State)) +
@@ -118,7 +122,7 @@ india_city_pollution2 %>%
   facet_wrap(~Pollutant, scales = "free_x")+
   theme(legend.position = "none",
         axis.title.y = element_text(size = 15))+
-  labs(title = "Highest Pollutants in each State",
+  labs(title = "Highest Pollutants in each State between 2015-2020",
        y = "",
        x = "Degree of Pollution")
   
@@ -126,17 +130,17 @@ india_city_pollution2 %>%
 
 ```{r}
 indian_states <- st_read("Igismap/Indian_States.shp", quiet = TRUE) %>% 
-  filter(st_nm != "Andaman & Nicobar Islands",
-         st_nm != "Lakshwadeep") %>% 
-
-
+  filter(st_nm != "Andaman & Nicobar Island",
+         st_nm != "Lakshadweep") %>% 
+  left_join(india_city_pollution2,
+            by = c("st_nm" = "State"))
 ```
 
 
 ```{r}
 indian_states %>% 
   ggplot()+ 
-  geom_sf(aes(fill = ))
+  geom_sf(aes(fill = degree_pollution))
 ```
 
 **#4**
@@ -185,14 +189,15 @@ ggplotly(pollution_season,
 ```{r}
 india <- get_stamenmap(
     bbox = c(left = 61.188, bottom = 8.026, right = 106.542, top = 36.502), 
-    maptype = "terrain",
+    maptype = "toner-lite",
     zoom = 5)
 
 ggmap(india)+
-geom_point(data = india_city_pollution2,
-           aes(x = Long, y = Lat, color = Pollutant, size = ))+
-  facet_wrap(~year)+
-  theme(legend.background = element_blank())+
+geom_point(data = india_city_pollution2 %>% filter(Pollutant != "AQI"),
+           aes(x = Long, y = Lat, color = Pollutant, size = degree_pollution))+
+theme(legend.background = element_blank(),
+      legend.position = "bottomright")+
+  facet_wrap(~Pollutant)+
   theme_map()
 ```
 
@@ -209,27 +214,34 @@ geom_point(data = india_city_pollution2,
 india_factories %>% 
   select(`State/Union Territory`, `Number of Factories - 2014-15`) %>% 
   arrange(desc(`Number of Factories - 2014-15`)) %>% 
-  ggplot(aes(x = `Number of Factories - 2014-15`, y = `State/Union Territory`)) +
+  ggplot(aes(x = `Number of Factories - 2014-15`, y = fct_reorder(`State/Union Territory`,`Number of Factories - 2014-15`, .desc = TRUE ))) +
   geom_col(fill = "DarkBlue") +
-  labs(x = "Number of Factories in 2015", title = "Number of Factories in Indian States")
+  labs(x = "", 
+       title = "Number of Factories in Indian States", 
+       y = "")+
+  theme_clean()
 
 ```
 
 ```{r}
 
+india <- get_stamenmap(
+    bbox = c(left = 61.188, bottom = 8.026, right = 106.542, top = 36.502), 
+    maptype = "toner-lite",
+    zoom = 5)
+    
+ggmap(india) +
+  geom_point(data = india_factory_pollution,
+             aes(x = Long, y = Lat, size = `Number of Factories - 2014-15` ))+
+  labs(title = "Number of Factories in 2015 in major Indian Cities",
+       x = "",
+       y = "")
 ```
-
-
 ```{r}
-mean_aqi <- 
-  india_city_pollution2 %>%
-  group_by(State) %>% 
-  summarise(state_mean_AQI = mean(AQI, na.rm = TRUE)) %>% 
-
-ggmap(india)+
-  geom_point(data = mean_aqi, 
-           aes(x = Long, y = Lat, color = state_mean_AQI))+
-  #facet_wrap(~Pollutant)+
-  theme(legend.background = element_blank())+
-  theme_map()
+india_factory_pollution %>% 
+  #select(`State/Union Territory`, `Number of Factories - 2014-15`) %>% 
+  group_by(City) %>% 
+  arrange(desc(`Number of Factories - 2014-15`)) %>% 
 ```
+
+
