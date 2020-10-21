@@ -129,7 +129,7 @@ knitr::include_graphics("AQI.png")
 *IN*: As you can see in this graph, which depicts the highest AQIs for each of the Indian cities we analyse between 2015 and 2020, air pollution is the highest in the city of Ahmedabad, followed by the cities of Guwahati, Gurugram, Amritsar and Hyderabad respectively. These are all cities with at least a population of a million people each, and are spread out across the country as compared to being concentrated in a particular geographical area.
 
 
-```{r}
+```{r, message=FALSE}
 india <- get_stamenmap( bbox = c(left = 61.188, 
                                  bottom = 8.026, 
                                  right = 106.542, 
