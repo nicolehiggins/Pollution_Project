@@ -87,6 +87,7 @@ geom_point(data = india_city_pollution2 %>% filter(Pollutant == "AQI", year == "
            aes(x = Long, y = Lat, size = degree_pollution))+
 theme(legend.background = element_blank(),
       legend.position = "bottomright")+
+theme(plot.title = element_text(face="bold", hjust=0.5))+
 labs(title = "AQI of Indian Cities in 2020")  
   theme_map()
 ```
@@ -113,6 +114,7 @@ india_city_pollution %>%
   ggplot(aes(x = Date, y = AQI, color = City)) +
   geom_line() +
   facet_wrap(vars(City)) +
+  theme(plot.title = element_text(face="bold", hjust=0.5))+
   labs(title = "Air Quality Index in Major Indian Cities from 2015-2020")+
   theme(legend.position = "none")
 ```
@@ -139,6 +141,7 @@ india_pollutants<-
   ungroup() %>% 
   ggplot(aes(x = year, y = mean_monthly, fill = Pollutant))+
   geom_col()+
+  theme(plot.title = element_text(face="bold", hjust=0.5))+
   labs(title = "Pollutants over time in India",
        subtitle = "Pollutant:{closest_state}",
        y = "Monthly Average",
@@ -168,6 +171,7 @@ india_city_pollution2 %>%
   arrange(year) %>% 
   ggplot(aes(x = month, y = mean_monthly), position = position_stack())+
   geom_col(aes(fill = Pollutant))+
+  theme(plot.title = element_text(face="bold", hjust=0.5))+
   labs(title = "Pollution by Season in India",
        x = "",
        y = "Monthly Average")+
@@ -192,7 +196,8 @@ ggmap(india) +
              aes(x = Long, y = Lat, size = `Number of Factories - 2014-15` ))+
   labs(title = "Number of Factories in 2015 in Indian States",
        x = "",
-       y = "")
+       y = "") +
+  theme(plot.title = element_text(face="bold", hjust=0.5))
 ```
 US: One fairly obvious trend in the US with an effect on air pollution is the impact of increasing vehicle fuel efficiency. As shown in the graph below, cars in the US today get many more miles per gallon of gas than they did in 1980. This undoubtedly had a positive effect on AQI as cars, one of the biggest emitters of air pollutants, became cleaner.
 
