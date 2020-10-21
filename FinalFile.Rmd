@@ -57,13 +57,84 @@ india_city_pollution2 <-
          year = year(Date)) 
 ```
 
-INDIA MAP 1:
+Mod: To start with, where is air pollution concentrated in both countries?
+
 
 ```{r}
 ggmap(india)+
-geom_point(data = india_city_pollution2 %>% filter(Pollutant == "AQI"),
+geom_point(data = india_city_pollution2 %>% filter(Pollutant == "AQI", year == "2020"),
            aes(x = Long, y = Lat, size = degree_pollution))+
 theme(legend.background = element_blank(),
       legend.position = "bottomright")+
+labs(title = "AQI of Indian Cities in 2020")  
   theme_map()
 ```
+Mod: How has this changed over time?
+
+```{r}
+india_city_pollution %>% 
+  ggplot(aes(x = Date, y = AQI, color = City)) +
+  geom_line() +
+  facet_wrap(vars(City)) +
+  labs(title = "Air Quality Index in Major Indian Cities from 2015-2020")+
+  theme(legend.position = "none")
+```
+
+Mod: Does the composition of air pollution change over time too? What does this indicate?
+
+```{r}
+india_pollutants<-
+  india_city_pollution2 %>% 
+  group_by(month,Pollutant, year) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>%
+  ungroup() %>% 
+  ggplot(aes(x = year, y = mean_monthly, fill = Pollutant))+
+  geom_col()+
+  labs(title = "Pollutants over time in India",
+       subtitle = "Pollutant:{closest_state}",
+       y = "Monthly Average",
+       x = "")+
+  transition_states(Pollutant)
+
+anim_save("pollution_over_time.gif", india_pollutants)  
+```
+
+```{r}
+knitr::include_graphics("pollution_over_time.gif")
+```
+
+Are there any trends you notice that might indicate certain causes for the pollution in these countries?
+
+```{r}
+pollution_season<-
+india_city_pollution2 %>% 
+  filter(Pollutant!="AQI") %>% 
+  group_by(month,Pollutant, year) %>% 
+  summarize(mean_monthly = mean(degree_pollution)) %>%
+  arrange(year) %>% 
+  ggplot(aes(x = month, y = mean_monthly), position = position_stack())+
+  geom_col(aes(fill = Pollutant))+
+  labs(title = "Pollution by Season in India",
+       x = "",
+       y = "Monthly Average")+
+  scale_fill_viridis_d(option = "plasma")
+
+ggplotly(pollution_season,
+         tooltip = c("text", "y"))
+```
+
+```{r}
+
+india <- get_stamenmap(
+    bbox = c(left = 61.188, bottom = 8.026, right = 106.542, top = 36.502), 
+    maptype = "toner-lite",
+    zoom = 5)
+    
+ggmap(india) +
+  geom_point(data = india_factory_pollution,
+             aes(x = Long, y = Lat, size = `Number of Factories - 2014-15` ))+
+  labs(title = "Number of Factories in 2015 in Indian States",
+       x = "",
+       y = "")
+```
+
