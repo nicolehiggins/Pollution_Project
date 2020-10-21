@@ -201,6 +201,17 @@ theme(legend.background = element_blank(),
   theme_map()
 ```
 
+MAP 1: Distribution of AQI
+
+```{r}
+ggmap(india)+
+geom_point(data = india_city_pollution2 %>% filter(Pollutant == "AQI"),
+           aes(x = Long, y = Lat, size = degree_pollution))+
+theme(legend.background = element_blank(),
+      legend.position = "bottomright")+
+  theme_map()
+```
+
 ```{r}
 ggmap(india)+
 geom_point(data = india_city_pollution2, 
