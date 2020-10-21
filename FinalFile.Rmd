@@ -99,6 +99,7 @@ nat_sum <- nat_1980 %>%
   full_join(nat_2020,
             by = c("US AQI", "US CO", "US NO2", "US Ozone", "US SO2", "year"))
 ```
+
 **Air Pollution in two Major Countries: India and The United States**
 
 *Moderator*: Good morning! Thank you all for attending today’s webinar, where we explore recent air pollution trends in the US and India, looking at their causes and the ways in which they manifest. But before we get into that, why don’t you two talk a little bit about your backgrounds and why you’re interested in this area?
@@ -142,9 +143,10 @@ geom_point(data = india_city_pollution2 %>% filter(Pollutant == "AQI", year == "
 theme(legend.background = element_blank(),
       legend.position = "bottomright")+
 theme(plot.title = element_text(face="bold", hjust=0.5))+
-labs(title = "AQI of Indian Cities in 2020")  
+labs(title = "AQI of Indian Cities in 2020") + 
   theme_map()
 ```
+
 *US*: As the US has a smaller industrial base and tighter environmental regulations than India (which we’ll get more into later); the areas of worse air pollution tend to be in the southern states such as Mississippi, Tennessee, and Texas. The areas with the best air quality tend to be the ones with sparse populations in the west. For example, states in “Big Sky country” such as Wyoming and Montana tend to have AQI levels at or near 0.  
 
 ```{r, message=FALSE}
@@ -292,6 +294,7 @@ ggmap(india) +
        y = "") +
   theme(plot.title = element_text(face="bold", hjust=0.5))
 ```
+
 *US*: One factor that has an effect on air pollution is increasing vehicle fuel efficiency. As shown in this graph, cars in the US today get many more miles per gallon of gas than they did in 1980. This undoubtedly had a positive effect on AQI as cars, one of the biggest emitters of air pollutants, became cleaner.
 
 ```{r}
