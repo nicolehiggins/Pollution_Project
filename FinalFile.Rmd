@@ -324,3 +324,26 @@ AQIcars %>% ggplotly()
 
 *Moderator*: Thank you both so much for your time, this has been an extremely interesting and informative session. Thank you to all the viewers for attending this webinar - you can find the speakers’ data sources at the following links. See you next time!
 
+
+**References**
+
+Text Sources:
+
+https://edition.cnn.com/2020/02/25/health/most-polluted-cities-india-pakistan-intl-hnk/index.html
+https://urbanemissions.info/india-air-quality/india-ambient-monitoring-data/#:~:text=As%20of%20September%202019%2C%20under,with%20at%20least%20one%20monitor.
+https://www.airnow.gov/aqi/aqi-basics/ 
+https://www.sciencedaily.com/releases/2020/07/200716101621.htm
+https://indianexpress.com/article/explained/explained-why-does-air-pollution-rise-in-october-each-year-6759030/
+https://www.nytimes.com/interactive/2020/climate/trump-environment-rollbacks.html 
+https://doi.org/10.1257%2Faer.20151272
+https://www.transportpolicy.net/standard/india-air-quality-standards/#:~:text=Under%20the%20authority%20of%20the,planning%20to%20meet%20such%20standards.
+
+Data Sources:
+
+Indian data:
+The data has been made publicly available by the Central Pollution Control Board: https://cpcb.nic.in/ which is the official portal of Government of India. They also have a real-time monitoring app: https://app.cpcbccr.com/AQI_India/
+Downloaded from https://www.kaggle.com/rohanrao/air-quality-data-in-india.
+ 
+US data:
+“National Air Quality: Status and Trends of Key Air Pollutants.” EPA, Environmental Protection Agency, 20 Aug. 2020, www.epa.gov/air-trends. 
+“Explore the Automotive Trends Data.” EPA, Environmental Protection Agency, 12 May 2020, www.epa.gov/automotive-trends/explore-automotive-trends-data. 
